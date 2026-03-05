@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # Mock vLLM service for testing
+  mock-vllm:
+    image: python:3.10-slim
+    container_name: mock-vllm
+    ports:
+      - "8000:8000"
+    command: >
+      bash -c "
+      pip install fastapi uvicorn &&
+      cat > /tmp/mock_vllm.py << 'EOF'
+      from fastapi import FastAPI
+      app = FastAPI()
+      
+      @app.post('/v1/chat/completions')
+      def chat(request: dict):
+          return {
+              'id': 'mock-123',
+              'object': 'chat.completion',
+              'model': 'HuggingFaceTB/SmolLM2-135M-Instruct',
+              'choices': [{
+                  'message': {
+                      'role': 'assistant',
+                      'content': 'This is a mock response. The answer to your question is: 42'
+                  },
+                  'finish_reason': 'stop'
+              }]
+          }
+      EOF
+      uvicorn mock_vllm:app --host 0.0.0.0 --port 8000
+      "
+
+  backend:
+    build: ./app
+    container_name: backend-service
+    ports:
+      - "8080:8080"
+    environment:
+      - VLLM_URL=http://mock-vllm:8000
+    depends_on:
+      - mock-vllm

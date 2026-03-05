@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  vllm:
+    image: vllm/vllm-openai:latest
+    container_name: vllm-service
+    command: ["--model", "HuggingFaceTB/SmolLM2-135M-Instruct"]
+    ports:
+      - "8000:8000"
+    environment:
+      - HF_HOME=/root/.cache/huggingface
+    volumes:
+      - vllm-cache:/root/.cache/huggingface
+
+  backend:
+    build: ./app
+    container_name: backend-service
+    ports:
+      - "8080:8080"
+    environment:
+      - VLLM_URL=http://vllm:8000
+    depends_on:
+      - vllm
+
+volumes:
+  vllm-cache:

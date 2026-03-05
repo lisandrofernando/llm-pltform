@@ -1,0 +1,12 @@
+model:
+  name: HuggingFaceTB/SmolLM2-135M-Instruct
+
+replicaCount: 1
+
+resources:
+  requests:
+    cpu: "2"
+    memory: "4Gi"
+  limits:
+    cpu: "4"
+    memory: "8Gi"

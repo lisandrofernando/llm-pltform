@@ -1,0 +1,8 @@
+image:
+  repository: <YOUR_ECR_REPO>
+  tag: latest
+
+replicaCount: 2
+
+env:
+  VLLM_URL: http://vllm-service:8000
