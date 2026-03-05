@@ -10,12 +10,17 @@ module "eks" {
 
   enable_irsa = true
 
+  cluster_security_group_id = aws_security_group.eks_cluster_sg.id
+
   eks_managed_node_groups = {
     system_nodes = {
       instance_types = ["t3.medium"]
-      min_size     = 2
-      max_size     = 3
-      desired_size = 2
+      min_size       = 2
+      max_size       = 3
+      desired_size   = 2
+      
+      iam_role_arn = aws_iam_role.eks_node_role.arn
+      vpc_security_group_ids = [aws_security_group.eks_nodes_sg.id]
     }
   }
 }
