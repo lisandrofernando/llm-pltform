@@ -13,9 +13,9 @@ module "eks" {
   eks_managed_node_groups = {
     system_nodes = {
       instance_types = ["t3.medium"]
-      min_size     = 2
-      max_size     = 3
-      desired_size = 2
+      min_size       = 2
+      max_size       = 3
+      desired_size   = 2
     }
   }
 }
